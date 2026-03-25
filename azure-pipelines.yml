@@ -39,7 +39,7 @@ variables:
   # Paths
   solution: 'HelloFunctionApp.sln'
   appProject: 'HelloFunctionApp.csproj'
-  testProjects: 'HelloFunctionApp.Tests/HelloFunctionApp.Tests.csproj'
+  testProjects: 'tests/HelloFunctionApp.Tests/HelloFunctionApp.Tests.csproj'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
 
 stages:
