@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-function-app
+  labels:
+    app: hello-function-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-function-app
+  template:
+    metadata:
+      labels:
+        app: hello-function-app
+    spec:
+      containers:
+        - name: hello-function-app
+          image: .................azurecr.io/teste-dot-net:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: AzureWebJobsStorage
+              value: "UseDevelopmentStorage=true"
+            - name: FUNCTIONS_WORKER_RUNTIME
+              value: "dotnet-isolated"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"

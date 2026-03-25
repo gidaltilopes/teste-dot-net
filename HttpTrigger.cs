@@ -1,23 +1,29 @@
+using System.Net;
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
-namespace pipeline;
-
-public class HttpTrigger
+namespace HelloFunctionApp
 {
-    private readonly ILogger<HttpTrigger> _logger;
-
-    public HttpTrigger(ILogger<HttpTrigger> logger)
+    public class HttpTrigger
     {
-        _logger = logger;
-    }
+        private readonly ILogger _logger;
 
-    [Function("HttpTrigger")]
-    public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
-    {
-        _logger.LogInformation("C# HTTP trigger function processed a request.");
-        return new OkObjectResult("Welcome to Azure Functions!");
+        public HttpTrigger(ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger<HttpTrigger>();
+        }
+
+        [Function("HttpTrigger")]
+        public HttpResponseData Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.WriteString("Hello, World from Azure Function!");
+
+            return response;
+        }
     }
 }
