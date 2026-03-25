@@ -88,6 +88,18 @@ stages:
         packageType: 'sdk'
         version: '$(dotnetVersion)'
 
+    - task: SonarCloudPrepare@4
+      displayName: 'Prepare SonarQube Cloud analysis'
+      inputs:
+        SonarCloud: '$(sonarServiceConnection)'
+        organization: '$(sonarOrganization)'
+        scannerMode: 'dotnet'
+        projectKey: '$(sonarProjectKey)'
+        projectName: '$(sonarProjectName)'
+        extraProperties: |
+          sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
+          sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/coverage.opencover.xml
+
     - task: DotNetCoreCLI@2
       displayName: 'Test with coverage'
       inputs:
@@ -102,35 +114,6 @@ stages:
           /p:CoverletOutput=$(Agent.TempDirectory)/coverage/
           /p:CoverletOutputFormat=opencover
 
-- stage: Quality
-  displayName: 'Code Quality'
-  dependsOn: Test
-  condition: succeeded()
-  jobs:
-  - job: SonarJob
-    displayName: 'Sonar Analysis'
-    steps:
-    - checkout: self
-      fetchDepth: 0
-
-    - task: UseDotNet@2
-      displayName: 'Use .NET SDK 8'
-      inputs:
-        packageType: 'sdk'
-        version: '$(dotnetVersion)'
-
-    - task: SonarCloudPrepare@4
-      displayName: 'Prepare SonarQube Cloud analysis'
-      inputs:
-        SonarCloud: '$(sonarServiceConnection)'
-        organization: '$(sonarOrganization)'
-        scannerMode: 'dotnet'
-        projectKey: '$(sonarProjectKey)'
-        projectName: '$(sonarProjectName)'
-        extraProperties: |
-          sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
-          sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/coverage.opencover.xml
-
     - task: SonarCloudAnalyze@4
       displayName: 'Run SonarQube Cloud analysis'
 
@@ -141,7 +124,7 @@ stages:
 
 - stage: Package
   displayName: 'Package and Push'
-  dependsOn: Quality
+  dependsOn: Test
   condition: succeeded()
   jobs:
   - job: DockerJob
