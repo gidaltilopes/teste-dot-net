@@ -109,7 +109,6 @@ stages:
         arguments: >
           --configuration $(buildConfiguration)
           --no-build
-          --logger trx
           /p:CollectCoverage=true
           /p:CoverletOutput=$(Agent.TempDirectory)/coverage/
           /p:CoverletOutputFormat=opencover
