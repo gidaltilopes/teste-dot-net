@@ -89,11 +89,10 @@ stages:
         version: '$(dotnetVersion)'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Build Tests'
+      displayName: 'Restore'
       inputs:
-        command: 'build'
-        projects: '$(testProjects)'
-        arguments: '--configuration $(buildConfiguration)'
+        command: 'restore'
+        projects: '$(solution)'
 
     - task: SonarCloudPrepare@4
       displayName: 'Prepare SonarQube Cloud analysis'
@@ -106,6 +105,13 @@ stages:
         extraProperties: |
           sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/*.trx
           sonar.cs.opencover.reportsPaths=$(Agent.TempDirectory)/**/coverage.opencover.xml
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build'
+      inputs:
+        command: 'build'
+        projects: '$(solution)'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
 
     - task: DotNetCoreCLI@2
       displayName: 'Test with coverage'
