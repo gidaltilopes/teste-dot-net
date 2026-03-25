@@ -19,13 +19,13 @@ variables:
 
   # SonarQube Cloud
   sonarServiceConnection: 'sc-sonarcloud'
-  sonarOrganization: 'SUA_ORGANIZATION'
-  sonarProjectKey: 'SUA_ORGANIZATION_teste-dot-net'
+  sonarOrganization: 'gidaltilopes'
+  sonarProjectKey: 'gidaltilopes_teste-dot-net'
   sonarProjectName: 'teste-dot-net'
 
   # Container / ACR
   dockerRegistryServiceConnection: 'sc-acr'
-  containerRegistry: 'seuacr.azurecr.io'
+  containerRegistry: 'testedotnet.azurecr.io'
   imageRepository: 'teste-dot-net'
   imageTag: '$(Build.BuildId)'
 
@@ -129,7 +129,7 @@ stages:
 #         deploy:
 #           steps:
 #           - checkout: self
-
+#
 #           - task: KubernetesManifest@1
 #             displayName: 'Deploy manifests'
 #             inputs:
