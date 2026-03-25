@@ -105,13 +105,8 @@ stages:
       inputs:
         command: 'test'
         projects: '$(testProjects)'
+        arguments: '--configuration $(buildConfiguration) --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
         publishTestResults: true
-        arguments: >
-          --configuration $(buildConfiguration)
-          --no-build
-          /p:CollectCoverage=true
-          /p:CoverletOutput=$(Agent.TempDirectory)/coverage/
-          /p:CoverletOutputFormat=opencover
 
     - task: SonarCloudAnalyze@4
       displayName: 'Run SonarQube Cloud analysis'
