@@ -88,6 +88,13 @@ stages:
         packageType: 'sdk'
         version: '$(dotnetVersion)'
 
+    - task: DotNetCoreCLI@2
+      displayName: 'Build Tests'
+      inputs:
+        command: 'build'
+        projects: '$(testProjects)'
+        arguments: '--configuration $(buildConfiguration)'
+
     - task: SonarCloudPrepare@4
       displayName: 'Prepare SonarQube Cloud analysis'
       inputs:
