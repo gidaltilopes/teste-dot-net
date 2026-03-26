@@ -147,6 +147,7 @@ stages:
         containerRegistry: '$(dockerRegistryServiceConnection)'
         repository: '$(imageRepository)'
         dockerfile: '$(dockerfilePath)'
+        arguments: '--platform linux/amd64'
         tags: |
           $(imageTag)
           latest
