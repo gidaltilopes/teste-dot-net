@@ -136,33 +136,27 @@ stages:
           $(imageTag)
           latest
 
-# - stage: CD_DEV
-#   displayName: 'Deploy to AKS DEV'
-#   dependsOn: Package
-#   condition: succeeded()
-#   jobs:
-#   - deployment: DeployToAks
-#     environment: 'dev'
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - checkout: self
+- stage: CD_DEV
+  displayName: 'Check Pods on AKS'
+  dependsOn: Package
+  condition: succeeded()
+  jobs:
+  - job: GetPods
+    displayName: 'Get Pods'
+    steps:
+    - task: AzureCLI@2
+      displayName: 'Login and get pods'
+      inputs:
+        azureSubscription: '$(azureSubscription)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az aks get-credentials \
+            --resource-group $(aksResourceGroup) \
+            --name $(aksClusterName) \
+            --overwrite-existing
 
-#           - task: KubernetesManifest@1
-#             inputs:
-#               action: 'deploy'
-#               connectionType: 'azureResourceManager'
-#               azureSubscriptionConnection: '$(azureSubscription)'
-#               azureResourceGroup: '$(aksResourceGroup)'
-#               kubernetesCluster: '$(aksClusterName)'
-#               namespace: '$(kubernetesNamespace)'
-#               manifests: |
-#                 $(Build.SourcesDirectory)/k8s/deployment.yaml
-#                 $(Build.SourcesDirectory)/k8s/service.yaml
-#                 $(Build.SourcesDirectory)/k8s/ingress.yaml
-#               containers: |
-#                 $(containerRegistry)/$(imageRepository):$(imageTag)
+          kubectl get pods -n $(kubernetesNamespace)
 
 # ✅ SUCESSO
 - stage: Notify_Success
