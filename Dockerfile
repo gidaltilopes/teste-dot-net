@@ -11,6 +11,7 @@ FROM --platform=linux/amd64 mcr.microsoft.com/azure-functions/dotnet-isolated:4-
 WORKDIR /home/site/wwwroot
 COPY --from=build /app/publish .
 
+
 # Optional: expõe porta e define probe, se quiser controlar via Kubernetes
 # EXPOSE 80
 # HEALTHCHECK --interval=30s --timeout=5s CMD curl -f http://localhost:80 || exit 1
