@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: hello-function-app
-          image: .................azurecr.io/teste-dot-net:latest
+          image: testedotnet.azurecr.io/teste-dot-net:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -25,6 +25,18 @@ spec:
               value: "UseDevelopmentStorage=true"
             - name: FUNCTIONS_WORKER_RUNTIME
               value: "dotnet-isolated"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 30
           resources:
             requests:
               cpu: "100m"
