@@ -136,33 +136,33 @@ stages:
           $(imageTag)
           latest
 
-- stage: CD_DEV
-  displayName: 'Deploy to AKS DEV'
-  dependsOn: Package
-  condition: succeeded()
-  jobs:
-  - deployment: DeployToAks
-    environment: 'dev'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - checkout: self
+# - stage: CD_DEV
+#   displayName: 'Deploy to AKS DEV'
+#   dependsOn: Package
+#   condition: succeeded()
+#   jobs:
+#   - deployment: DeployToAks
+#     environment: 'dev'
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+#           - checkout: self
 
-          - task: KubernetesManifest@1
-            inputs:
-              action: 'deploy'
-              connectionType: 'azureResourceManager'
-              azureSubscriptionConnection: '$(azureSubscription)'
-              azureResourceGroup: '$(aksResourceGroup)'
-              kubernetesCluster: '$(aksClusterName)'
-              namespace: '$(kubernetesNamespace)'
-              manifests: |
-                $(Build.SourcesDirectory)/k8s/deployment.yaml
-                $(Build.SourcesDirectory)/k8s/service.yaml
-                $(Build.SourcesDirectory)/k8s/ingress.yaml
-              containers: |
-                $(containerRegistry)/$(imageRepository):$(imageTag)
+#           - task: KubernetesManifest@1
+#             inputs:
+#               action: 'deploy'
+#               connectionType: 'azureResourceManager'
+#               azureSubscriptionConnection: '$(azureSubscription)'
+#               azureResourceGroup: '$(aksResourceGroup)'
+#               kubernetesCluster: '$(aksClusterName)'
+#               namespace: '$(kubernetesNamespace)'
+#               manifests: |
+#                 $(Build.SourcesDirectory)/k8s/deployment.yaml
+#                 $(Build.SourcesDirectory)/k8s/service.yaml
+#                 $(Build.SourcesDirectory)/k8s/ingress.yaml
+#               containers: |
+#                 $(containerRegistry)/$(imageRepository):$(imageTag)
 
 # ✅ SUCESSO
 - stage: Notify_Success
