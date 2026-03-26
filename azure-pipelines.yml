@@ -136,21 +136,29 @@ stages:
   jobs:
   - job: DockerJob
     displayName: 'Build and Push Docker Image'
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
     - checkout: self
       fetchDepth: 0
 
     - task: Docker@2
-      displayName: 'Build and push image to ACR'
+      displayName: 'Login to ACR'
       inputs:
-        command: 'buildAndPush'
+        command: 'login'
         containerRegistry: '$(dockerRegistryServiceConnection)'
-        repository: '$(imageRepository)'
-        dockerfile: '$(dockerfilePath)'
-        arguments: '--platform linux/amd64'
-        tags: |
-          $(imageTag)
-          latest
+
+    - script: |
+        docker buildx create --use --name mybuilder || docker buildx use mybuilder
+        docker buildx inspect --bootstrap
+
+        docker buildx build \
+          --platform linux/amd64 \
+          -f $(dockerfilePath) \
+          -t $(imageRepository):$(imageTag) \
+          -t $(imageRepository):latest \
+          --push .
+      displayName: 'Buildx AMD64 and push'
 
 - stage: CD_DEV
   displayName: 'Deploy to AKS DEV'
