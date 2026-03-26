@@ -32,8 +32,8 @@ variables:
 
   # Azure / AKS
   azureSubscription: 'sc-azure'
-  aksResourceGroup: 'rg-aks'
-  aksClusterName: 'aks-main'
+  aksResourceGroup: 'resource1'
+  aksClusterName: 'aksdev'
   kubernetesNamespace: 'default'
 
   # Paths
